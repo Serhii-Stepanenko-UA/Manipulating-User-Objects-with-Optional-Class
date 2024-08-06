@@ -1,7 +1,7 @@
 package app;
 
 public class User {
-    private Integer id;
+    private int id;
     private String name;
     private String email;
 

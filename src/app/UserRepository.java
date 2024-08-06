@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserRepository {
 
-    public static List<User> list;
+    public static List<User> listUsers;
 
     public static void main(String[] args) {
 
@@ -21,48 +21,44 @@ public class UserRepository {
                 new User(0, null, "null@empty.com"),
                 new User()
         );
-
-        id = 17;
-        findUserById(id);
+        UserRepository userRepository = new UserRepository();
+        listUsers = usersList;
+        id = 95;
+        Optional<User> userById = userRepository.findUserById(id);
+        System.out.println("\nThe user by Id (" + id + ") is: " + userById);
 
         email = "sara-OD-UA@.ukr.net";
-        findUserByEmail(email);
+        Optional<User> userByEmail = userRepository.findUserByEmail(email);
+        System.out.println("\nThe user by email (" + email + ") is: " + userByEmail);
 
-        list = usersList;
         findAllUsers();
 
     }
 
-//        Метод findUserById(int id) повертає Optional<User> з користувачем за вказаним id
-    public static void findUserById(int id){
-         Optional.ofNullable(list)
-                .flatMap(User::getId)
-                .filter(userId-> userId == id)
-                .ifPresentOrElse(
-                        (res)-> {
-                            System.out.println("User with id " + id + " is: " + res); },
-                        ()-> {
-                            System.out.println("\nNo matched id data"); });
+    //        Метод findUserById(int id) повертає Optional<User> з користувачем за вказаним id
+    public Optional<User> findUserById(int id) {
+        for (User user : listUsers) {
+            if (user.getId() == id)
+                return Optional.of(user);
+        }
+        return Optional.empty();
     }
 
-// Метод findUserByEmail(String email)повертає Optional<User> з користувачем за вказаною електронною поштою
-    public static void findUserByEmail(String email){
-            Optional.ofNullable(list)
-                    .filter(user -> user.contains(email))
-                    .flatMap(String::trim)
-                    .ifPresentOrElse(
-                            (res)-> {
-                                System.out.println("User with email " + email + " is: " + res); },
-                            ()->{
-                                System.out.println("\nNo matched id data"); });
+    // Метод findUserByEmail(String email)повертає Optional<User> з користувачем за вказаною електронною поштою
+    public Optional<User> findUserByEmail(String email) {
+        for (User user : listUsers) {
+            if (user.getEmail().equals(email))
+                return Optional.of(user);
+        }
+        return Optional.empty();
     }
 
     //Метод findAllUsers(), який повертає нумерований список всіх користувачів у вигляді Optional<List<User>> та кількість користувачів
     public static void findAllUsers() {
-        Optional<List<User>> optionalList = Optional.ofNullable(list);
+        Optional<List<User>> optionalList = Optional.ofNullable(listUsers);
 //        optionalList.ifPresent(l -> l.forEach(System.out::println));// повертає список
         if (optionalList.isPresent()) {
-            System.out.println("\nUsers list: ");
+            System.out.println("\nAll users list: ");
             AtomicInteger cnt = new AtomicInteger(1);
             optionalList.get().forEach(user ->
                     System.out.println(cnt.getAndIncrement() +
